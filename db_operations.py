@@ -47,15 +47,21 @@ def get_user(username, communication=None):
     else: 
         query = f'''SELECT id, username, first_name, last_name, phone, email from users where username='{username}';'''
     cur.execute(query)
+    user = cur.fetchall()
     cur.close()
-    return cur.fetchall()
+    con.close()
+    return user
 
 def add_user(username, first_name, last_name, phone, email):
     con = get_conn()
     cur = con.cursor()
 
     query = f'''INSERT INTO users 
-        VALUES (DEFAULT, '{username}', '{first_name}', '{last_name}', '{phone}', '{email}');'''
+        (username, first_name, last_name, phone, email)
+        VALUES ('{username}', '{first_name}', '{last_name}', '{phone}', '{email}');'''
     cur.execute(query)
     cur.close()
-    return cur.fetchall()
+    con.commit()
+    con.close()
+    print('User successfully Added!')
+    return 
